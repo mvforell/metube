@@ -9,4 +9,3 @@ services:
       - ./downloads:/downloads
     environment:
       - 'YTDL_OPTIONS={"writeinfojson": true, "writethumbnail": true, "postprocessors": [{"key": "FFmpegMetadata"}, {"key": "EmbedThumbnail", "already_have_thumbnail": true}]}'
-      - 'DELETE_FILE_ON_TRASHCAN=true'
