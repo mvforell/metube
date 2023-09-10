@@ -10,6 +10,7 @@ import json
 import pathlib
 
 from ytdl import DownloadQueueNotifier, DownloadQueue
+from ytdl_nfo import Ytdl_nfo
 
 log = logging.getLogger('main')
 
@@ -96,6 +97,11 @@ class Notifier(DownloadQueueNotifier):
         await sio.emit('updated', serializer.encode(dl))
 
     async def completed(self, dl):
+        downloaded_file = os.path.join(dl.dldirectory, dl.filename)
+        info_json = os.path.splitext(downloaded_file)[0] + '.info.json'
+        if os.path.exists(info_json):
+            Ytdl_nfo(info_json).process()
+            os.remove(info_json)
         await sio.emit('completed', serializer.encode(dl))
 
     async def canceled(self, id):

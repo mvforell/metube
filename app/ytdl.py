@@ -345,6 +345,9 @@ class DownloadQueue:
                 try:
                     dldirectory, _ = self.__calc_download_path(dl.info.quality, dl.info.format, dl.info.folder)
                     os.remove(os.path.join(dldirectory, dl.info.filename))
+                    nfo_file = os.path.join(dldirectory, os.path.splitext(dl.info.filename)[0] + '.nfo')
+                    if os.path.exists(nfo_file):
+                        os.remove(nfo_file)
                 except Exception as e:
                     log.warn(f'deleting file for download {id} failed with error message {e!r}')
             self.done.delete(id)
@@ -378,4 +381,6 @@ class DownloadQueue:
                     await self.notifier.canceled(id)
                 else:
                     self.done.put(entry)
+                    dldirectory, _ = self.__calc_download_path(entry.info.quality, entry.info.format, entry.info.folder)
+                    entry.info.dldirectory = dldirectory
                     await self.notifier.completed(entry.info)
