@@ -98,10 +98,14 @@ class Notifier(DownloadQueueNotifier):
 
     async def completed(self, dl):
         downloaded_file = os.path.join(dl.dldirectory, dl.filename)
-        info_json = os.path.splitext(downloaded_file)[0] + '.info.json'
+        file_no_ext = os.path.splitext(downloaded_file)[0]
+        info_json = file_no_ext + '.info.json'
         if os.path.exists(info_json):
             Ytdl_nfo(info_json).process()
             os.remove(info_json)
+        thumbnail = file_no_ext + '.webp'
+        if os.path.exists(thumbnail):
+            os.remove(thumbnail)
         await sio.emit('completed', serializer.encode(dl))
 
     async def canceled(self, id):
